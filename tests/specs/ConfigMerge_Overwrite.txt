@@ -1,0 +1,17 @@
+~~ {"merge": "overwrite"} ~~
+== should overwrite existing fields on duplicates ==
+@article{one,
+  title         = {Old Title},
+  doi           = {10.1000/182}
+}
+
+@article{two,
+  title         = {New Title},
+  doi           = {10.1000/182}
+}
+
+[expect]
+@article{one,
+  title         = {New Title},
+  doi           = {10.1000/182}
+}

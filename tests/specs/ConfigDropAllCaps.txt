@@ -1,0 +1,10 @@
+~~ dropAllCaps: true ~~
+== should drop all caps preserving Roman numerals ==
+@article{key,
+  title         = {JOURNAL OF COMPUTER SCIENCE III}
+}
+
+[expect]
+@article{key,
+  title         = {Journal Of Computer Science III}
+}

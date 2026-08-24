@@ -1,0 +1,13 @@
+~~ removeEmptyFields: true ~~
+== should remove empty fields ==
+@article{key,
+  title         = {My Title},
+  author        = {},
+  year          = {2026}
+}
+
+[expect]
+@article{key,
+  title         = {My Title},
+  year          = {2026}
+}

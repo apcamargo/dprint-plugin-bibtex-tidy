@@ -1,0 +1,16 @@
+~~ tidyComments: false ~~
+== should preserve comment whitespace when tidyComments is false ==
+% First comment
+
+% Second comment
+@article{key,
+title={Title}
+}
+
+[expect]
+% First comment
+
+% Second comment
+@article{key,
+  title         = {Title}
+}

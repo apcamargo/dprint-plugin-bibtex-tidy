@@ -1,0 +1,14 @@
+~~ align: false ~~
+== should disable alignment when align is false ==
+@article{key,
+  title               = {Paper Title},
+  author              = {John Doe},
+  journal             = {ACM}
+}
+
+[expect]
+@article{key,
+  title = {Paper Title},
+  author = {John Doe},
+  journal = {ACM}
+}

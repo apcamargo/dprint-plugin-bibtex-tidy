@@ -1,0 +1,10 @@
+~~ encodeUrls: true ~~
+== should encode underscores in URL fields ==
+@article{key,
+  url           = {https://example.com/foo_bar_baz}
+}
+
+[expect]
+@article{key,
+  url           = {https://example.com/foo\%5Fbar\%5Fbaz}
+}

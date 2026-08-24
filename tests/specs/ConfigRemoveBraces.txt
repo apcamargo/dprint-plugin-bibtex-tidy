@@ -1,0 +1,10 @@
+~~ {"removeBraces": ["abstract"]} ~~
+== should remove inner braces from specified fields ==
+@article{key,
+  abstract      = {This has {inner} braces.}
+}
+
+[expect]
+@article{key,
+  abstract      = {This has inner braces.}
+}

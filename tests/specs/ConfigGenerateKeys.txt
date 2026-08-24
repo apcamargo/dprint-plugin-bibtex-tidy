@@ -1,0 +1,14 @@
+~~ {"generateKeys": "[auth][year]"} ~~
+== should generate citation keys from JabRef pattern ==
+@article{oldkey,
+  author        = {Doe, Jane},
+  year          = {2026},
+  title         = {A Paper}
+}
+
+[expect]
+@article{Doe2026,
+  author        = {Doe, Jane},
+  year          = {2026},
+  title         = {A Paper}
+}

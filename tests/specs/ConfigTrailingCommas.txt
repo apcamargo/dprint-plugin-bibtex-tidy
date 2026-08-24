@@ -1,0 +1,12 @@
+~~ trailingCommas: true ~~
+== should ensure trailing commas on last fields ==
+@article{key,
+  title         = {Title},
+  year          = {2026}
+}
+
+[expect]
+@article{key,
+  title         = {Title},
+  year          = {2026},
+}

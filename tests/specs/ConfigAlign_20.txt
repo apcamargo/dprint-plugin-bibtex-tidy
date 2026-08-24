@@ -1,0 +1,14 @@
+~~ align: 20 ~~
+== should align fields at column 20 ==
+@article{key,
+  title = {Paper Title},
+  author = {John Doe},
+  journal = {ACM}
+}
+
+[expect]
+@article{key,
+  title               = {Paper Title},
+  author              = {John Doe},
+  journal             = {ACM}
+}

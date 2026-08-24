@@ -1,0 +1,9 @@
+== should preserve long values with bibtex-tidy default flags ==
+@article{key,
+title={This is a very long title that should certainly stay on one line when bibtex-tidy is used without a wrap flag}
+}
+
+[expect]
+@article{key,
+  title         = {This is a very long title that should certainly stay on one line when bibtex-tidy is used without a wrap flag}
+}

@@ -1,0 +1,12 @@
+~~ months: true ~~
+== should abbreviate month names to standard macros ==
+@article{key,
+  title         = {Paper Title},
+  month         = {October}
+}
+
+[expect]
+@article{key,
+  title         = {Paper Title},
+  month         = oct
+}

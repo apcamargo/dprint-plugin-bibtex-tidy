@@ -1,0 +1,12 @@
+~~ useTabs: true ~~
+== should indent fields with tabs ==
+@article{key,
+  title = {Paper Title},
+  author = {Jane Doe}
+}
+
+[expect]
+@article{key,
+	title         = {Paper Title},
+	author        = {Jane Doe}
+}

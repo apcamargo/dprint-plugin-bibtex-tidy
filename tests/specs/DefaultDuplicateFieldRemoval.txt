@@ -1,0 +1,12 @@
+== should remove duplicate fields with bibtex-tidy default flags ==
+@article{key,
+title={First Title},
+title={Second Title},
+year={2026}
+}
+
+[expect]
+@article{key,
+  title         = {First Title},
+  year          = {2026}
+}

@@ -1,0 +1,12 @@
+~~ {"enclosingBraces": ["title"]} ~~
+== should enclose specified fields in double braces ==
+@article{key,
+  title         = {Single Braced Title},
+  journal       = {Single Braced Journal}
+}
+
+[expect]
+@article{key,
+  title         = {{Single Braced Title}},
+  journal       = {Single Braced Journal}
+}

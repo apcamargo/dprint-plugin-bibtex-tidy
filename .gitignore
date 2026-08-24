@@ -1,0 +1,4 @@
+/target
+/node_modules
+deployment/npm/plugin.wasm
+deployment/npm/node_modules

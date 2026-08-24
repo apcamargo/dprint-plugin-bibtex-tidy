@@ -1,0 +1,14 @@
+~~ numeric: true ~~
+== should strip braces from numeric values ==
+@article{key,
+  title  = {Title},
+  year   = {1998},
+  volume = {42}
+}
+
+[expect]
+@article{key,
+  title         = {Title},
+  year          = 1998,
+  volume        = 42
+}

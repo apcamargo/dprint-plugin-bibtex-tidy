@@ -1,0 +1,18 @@
+~~ {"merge": "combine"} ~~
+== should combine duplicate entries by DOI ==
+@article{one,
+  title         = {First Paper},
+  doi           = {10.1000/182}
+}
+
+@article{two,
+  year          = {2026},
+  doi           = {10.1000/182}
+}
+
+[expect]
+@article{one,
+  title         = {First Paper},
+  doi           = {10.1000/182},
+  year          = {2026}
+}

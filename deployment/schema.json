@@ -1,0 +1,269 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/apcamargo/dprint-plugin-bibtex-tidy/releases/download/0.0.0/schema.json",
+  "type": "object",
+  "properties": {
+    "lineWidth": {
+      "description": "When explicitly configured, wraps long values at this column. (CLI: --wrap <column>)",
+      "type": "integer",
+      "minimum": 1
+    },
+    "indentWidth": {
+      "description": "Number of spaces per indentation level. (CLI: --space)",
+      "default": 2,
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "useTabs": {
+      "description": "Indent with tabs instead of spaces. (CLI: --tab)",
+      "default": false,
+      "type": "boolean"
+    },
+    "space": {
+      "description": "Indent all fields with the specified number of spaces. Ignored if tab/useTabs is true.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "tab": {
+      "description": "Indent all fields with a tab.",
+      "type": "boolean"
+    },
+    "align": {
+      "description": "Insert whitespace between fields and values so that values are visually aligned. Set to a column number, or false/1 to disable.",
+      "default": 14,
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "blankLines": {
+      "description": "Insert an empty line between each entry.",
+      "default": false,
+      "type": "boolean"
+    },
+    "curly": {
+      "description": "Enclose all property values in braces. Quoted values will be converted to braces.",
+      "default": false,
+      "type": "boolean"
+    },
+    "numeric": {
+      "description": "Strip quotes and braces from numeric/month values (e.g. {1998} becomes 1998).",
+      "default": false,
+      "type": "boolean"
+    },
+    "months": {
+      "description": "Convert all months to three letter abbreviations (jan, feb, etc).",
+      "default": false,
+      "type": "boolean"
+    },
+    "sort": {
+      "description": "Sort bibliography entries by citation key (if true) or by specified field list. Prefix field with '-' for descending.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "duplicates": {
+      "description": "Check for duplicates (doi, key, abstract, citation). Enabled if merge is set.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["doi", "key", "abstract", "citation"]
+          }
+        }
+      ]
+    },
+    "merge": {
+      "description": "Merge duplicate entries using the specified strategy.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": ["first", "last", "combine", "overwrite"]
+        }
+      ]
+    },
+    "stripEnclosingBraces": {
+      "description": "Where an entire value is enclosed in double braces, remove the extra braces (e.g. {{Journal}} becomes {Journal}).",
+      "default": false,
+      "type": "boolean"
+    },
+    "dropAllCaps": {
+      "description": "Where values are all caps, make them title case while leaving Roman numerals unchanged.",
+      "default": false,
+      "type": "boolean"
+    },
+    "escape": {
+      "description": "Escape special characters such as umlauts into LaTeX macros. Use 'new' for package-independent LaTeX escapes.",
+      "default": true,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": ["new"]
+        }
+      ]
+    },
+    "unescape": {
+      "description": "Convert LaTeX escapes to Unicode characters.",
+      "default": false,
+      "type": "boolean"
+    },
+    "sortFields": {
+      "description": "Sort the fields within entries by standard order (if true) or specified field list.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "stripComments": {
+      "description": "Remove all comments from the BibTeX source.",
+      "default": false,
+      "type": "boolean"
+    },
+    "trailingCommas": {
+      "description": "End the last key value pair in each entry with a comma.",
+      "default": false,
+      "type": "boolean"
+    },
+    "encodeUrls": {
+      "description": "Replace invalid URL characters with percent encoded values.",
+      "default": false,
+      "type": "boolean"
+    },
+    "tidyComments": {
+      "description": "Remove whitespace surrounding comments.",
+      "default": true,
+      "type": "boolean"
+    },
+    "removeEmptyFields": {
+      "description": "Remove any fields that have empty values.",
+      "default": false,
+      "type": "boolean"
+    },
+    "removeDuplicateFields": {
+      "description": "Only allow one of each field in each entry.",
+      "default": true,
+      "type": "boolean"
+    },
+    "generateKeys": {
+      "description": "Replace entry citation key with a new key generated from a template pattern.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "maxAuthors": {
+      "description": "Truncate authors if above a given number into 'and others'.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "lowercase": {
+      "description": "Lowercase field names and entry type.",
+      "default": true,
+      "type": "boolean"
+    },
+    "enclosingBraces": {
+      "description": "Enclose the given fields in double braces so case is preserved during BibTeX compilation.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "removeBraces": {
+      "description": "Remove curly braces within field values unless part of a command.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "wrap": {
+      "description": "Wrap long values at the given column. true uses 80; false disables wrapping.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer",
+          "minimum": 1
+        }
+      ]
+    },
+    "omit": {
+      "description": "Remove specified fields from bibliography entries.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lineEnding": {
+      "description": "Overrides dprint's global newLineKind. Omit it to use the global setting, including auto.",
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "lf",
+          "description": "Line feed."
+        },
+        {
+          "const": "crlf",
+          "description": "Carriage return, line feed."
+        }
+      ]
+    }
+  }
+}

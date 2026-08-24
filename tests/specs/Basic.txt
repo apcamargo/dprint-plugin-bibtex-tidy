@@ -1,0 +1,13 @@
+== should format basic bibtex with defaults ==
+@ARTICLE{sample,
+TITLE={A Great Paper},
+AUTHOR={Alice and Bob},
+YEAR={2026}
+}
+
+[expect]
+@article{sample,
+  title         = {A Great Paper},
+  author        = {Alice and Bob},
+  year          = {2026}
+}

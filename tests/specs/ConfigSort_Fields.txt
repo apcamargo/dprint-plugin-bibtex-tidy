@@ -1,0 +1,30 @@
+~~ {"sort": ["-year", "title"]} ~~
+== should sort by descending year and ascending title ==
+@article{a,
+  title         = {Beta},
+  year          = {2020}
+}
+
+@article{b,
+  title         = {Alpha},
+  year          = {2020}
+}
+
+@article{c,
+  title         = {Gamma},
+  year          = {2025}
+}
+
+[expect]
+@article{c,
+  title         = {Gamma},
+  year          = {2025}
+}
+@article{b,
+  title         = {Alpha},
+  year          = {2020}
+}
+@article{a,
+  title         = {Beta},
+  year          = {2020}
+}

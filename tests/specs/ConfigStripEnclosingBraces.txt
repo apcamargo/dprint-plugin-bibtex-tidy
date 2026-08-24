@@ -1,0 +1,10 @@
+~~ stripEnclosingBraces: true ~~
+== should strip enclosing double braces ==
+@article{key,
+  title         = {{Double Braced Title}}
+}
+
+[expect]
+@article{key,
+  title         = {Double Braced Title}
+}

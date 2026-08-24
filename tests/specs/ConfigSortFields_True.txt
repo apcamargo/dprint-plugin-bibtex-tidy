@@ -1,0 +1,14 @@
+~~ sortFields: true ~~
+== should sort fields by standard order ==
+@article{key,
+  year          = {2026},
+  author        = {Jane Doe},
+  title         = {My Title}
+}
+
+[expect]
+@article{key,
+  title         = {My Title},
+  author        = {Jane Doe},
+  year          = {2026}
+}

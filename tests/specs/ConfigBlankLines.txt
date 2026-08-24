@@ -1,0 +1,17 @@
+~~ blankLines: true ~~
+== should insert blank line between entries ==
+@article{one,
+  title         = {First}
+}
+@article{two,
+  title         = {Second}
+}
+
+[expect]
+@article{one,
+  title         = {First}
+}
+
+@article{two,
+  title         = {Second}
+}

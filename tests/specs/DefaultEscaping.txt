@@ -1,0 +1,9 @@
+== should escape Unicode with bibtex-tidy default flags ==
+@article{key,
+title={München and Über}
+}
+
+[expect]
+@article{key,
+  title         = {M\"{u}nchen and \"{U}ber}
+}

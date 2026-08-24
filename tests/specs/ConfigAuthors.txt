@@ -1,0 +1,10 @@
+~~ maxAuthors: 2 ~~
+== should truncate author list to max authors ==
+@article{key,
+  author        = {Alice Smith and Bob Jones and Charlie Brown and Dave Miller}
+}
+
+[expect]
+@article{key,
+  author        = {Alice Smith and Bob Jones and others}
+}

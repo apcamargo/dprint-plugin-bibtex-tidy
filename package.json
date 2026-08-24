@@ -1,0 +1,15 @@
+{
+  "name": "dprint-plugin-bibtex-tidy",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:bundle": "node scripts/build_bundle.js"
+  },
+  "devDependencies": {
+    "rolldown": "^1.0.0-beta.50"
+  },
+  "dependencies": {
+    "bibtex-tidy": "^1.15.1"
+  }
+}

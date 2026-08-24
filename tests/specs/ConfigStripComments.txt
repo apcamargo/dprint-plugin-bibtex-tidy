@@ -1,0 +1,11 @@
+~~ stripComments: true ~~
+== should strip comments outside entries ==
+% This is a comment that will be removed
+@article{key,
+  title         = {Title}
+}
+
+[expect]
+@article{key,
+  title         = {Title}
+}

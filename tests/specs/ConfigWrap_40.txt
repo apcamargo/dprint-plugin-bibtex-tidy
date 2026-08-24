@@ -1,0 +1,15 @@
+~~ lineWidth: 40 ~~
+== should wrap long field values to line width ==
+@article{key,
+  title         = {This is a very long title that should certainly be wrapped when formatted with a short line width limit}
+}
+
+[expect]
+@article{key,
+  title         = {
+    This is a very long title that
+    should certainly be wrapped when
+    formatted with a short line width
+    limit
+  }
+}

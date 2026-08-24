@@ -1,0 +1,12 @@
+~~ curly: true ~~
+== should enclose quotes in curly braces ==
+@article{key,
+  title = "Journal of Tea",
+  author = {Jane Doe}
+}
+
+[expect]
+@article{key,
+  title         = {Journal of Tea},
+  author        = {Jane Doe}
+}

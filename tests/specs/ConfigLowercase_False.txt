@@ -1,0 +1,10 @@
+~~ lowercase: false ~~
+== should preserve uppercase entry types and field names ==
+@ARTICLE{key,
+TITLE={Paper Title}
+}
+
+[expect]
+@ARTICLE{key,
+  TITLE         = {Paper Title}
+}

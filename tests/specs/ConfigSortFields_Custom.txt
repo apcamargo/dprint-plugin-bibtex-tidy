@@ -1,0 +1,14 @@
+~~ {"sortFields": ["year", "title", "author"]} ~~
+== should sort fields by custom specified order ==
+@article{key,
+  author        = {Jane Doe},
+  title         = {My Title},
+  year          = {2026}
+}
+
+[expect]
+@article{key,
+  year          = {2026},
+  title         = {My Title},
+  author        = {Jane Doe}
+}

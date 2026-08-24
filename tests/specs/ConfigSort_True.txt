@@ -1,0 +1,21 @@
+~~ sort: true ~~
+== should sort entries by key ==
+@article{zebra,
+  title         = {Zebra Paper},
+  year          = {2020}
+}
+
+@article{alpha,
+  title         = {Alpha Paper},
+  year          = {2019}
+}
+
+[expect]
+@article{alpha,
+  title         = {Alpha Paper},
+  year          = {2019}
+}
+@article{zebra,
+  title         = {Zebra Paper},
+  year          = {2020}
+}

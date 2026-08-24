@@ -1,0 +1,14 @@
+~~ {"omit": ["abstract", "file"]} ~~
+== should omit specified fields ==
+@article{key,
+  title         = {Paper Title},
+  abstract      = {This abstract will be omitted},
+  file          = {path/to/file.pdf},
+  year          = {2026}
+}
+
+[expect]
+@article{key,
+  title         = {Paper Title},
+  year          = {2026}
+}

@@ -1,0 +1,10 @@
+~~ lineWidth: 40, wrap: false ~~
+== should not wrap long values when wrap is false ==
+@article{key,
+title={This is a very long title that should certainly be wrapped when formatted with a short line width limit}
+}
+
+[expect]
+@article{key,
+  title         = {This is a very long title that should certainly be wrapped when formatted with a short line width limit}
+}

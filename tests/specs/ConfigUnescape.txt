@@ -1,0 +1,10 @@
+~~ unescape: true, escape: false ~~
+== should unescape LaTeX macros to Unicode ==
+@article{key,
+  title         = {M\"{u}nchen and \"{U}ber}
+}
+
+[expect]
+@article{key,
+  title         = {München and Über}
+}
