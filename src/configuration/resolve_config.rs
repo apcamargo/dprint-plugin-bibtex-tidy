@@ -29,12 +29,27 @@ pub fn resolve_config(
   let indent_width =
     get_nullable_value::<u8>(&mut config, "indentWidth", &mut diagnostics).or(global_config.indent_width);
 
+  // New line kind - plugin newLineKind overrides global, matching lineWidth/indentWidth/useTabs. Supports auto/lf/crlf/system.
+  let raw_new_line_kind =
+    get_nullable_value::<dprint_core::configuration::RawNewLineKind>(&mut config, "newLineKind", &mut diagnostics);
+  let local_new_line_kind = raw_new_line_kind.map(|kind| match kind {
+    dprint_core::configuration::RawNewLineKind::Auto => dprint_core::configuration::NewLineKind::Auto,
+    dprint_core::configuration::RawNewLineKind::LineFeed => dprint_core::configuration::NewLineKind::LineFeed,
+    dprint_core::configuration::RawNewLineKind::CarriageReturnLineFeed => {
+      dprint_core::configuration::NewLineKind::CarriageReturnLineFeed
+    }
+    dprint_core::configuration::RawNewLineKind::System => {
+      if cfg!(windows) {
+        dprint_core::configuration::NewLineKind::CarriageReturnLineFeed
+      } else {
+        dprint_core::configuration::NewLineKind::LineFeed
+      }
+    }
+  });
+  let new_line_kind = local_new_line_kind.or(global_config.new_line_kind);
+
   // Use tabs
   let use_tabs = get_nullable_value::<bool>(&mut config, "useTabs", &mut diagnostics).or(global_config.use_tabs);
-
-  // Space & Tab aliases
-  let space = get_nullable_value::<u8>(&mut config, "space", &mut diagnostics);
-  let tab = get_nullable_value::<bool>(&mut config, "tab", &mut diagnostics);
 
   // Align
   let align = resolve_align(&mut config, &mut diagnostics);
@@ -96,20 +111,14 @@ pub fn resolve_config(
   // Omit
   let omit = resolve_string_array(&mut config, "omit", &mut diagnostics);
 
-  // A plugin-specific line ending overrides dprint's global behavior. Preserve
-  // `Auto` here so it can select an ending from the source file at format time.
-  let line_ending = get_nullable_value::<LineEnding>(&mut config, "lineEnding", &mut diagnostics);
-  let new_line_kind = global_config.new_line_kind;
-
   diagnostics.extend(get_unknown_property_diagnostics(config));
 
   ResolveConfigurationResult {
     config: Configuration {
       line_width,
       indent_width,
+      new_line_kind,
       use_tabs,
-      space,
-      tab,
       align,
       blank_lines,
       curly,
@@ -136,8 +145,6 @@ pub fn resolve_config(
       remove_braces,
       wrap,
       omit,
-      new_line_kind,
-      line_ending,
     },
     diagnostics,
   }
@@ -168,24 +175,20 @@ fn resolve_align(config: &mut ConfigKeyMap, diagnostics: &mut Vec<ConfigurationD
   }
 }
 
-fn resolve_wrap(config: &mut ConfigKeyMap, diagnostics: &mut Vec<ConfigurationDiagnostic>) -> Option<WrapOption> {
+fn resolve_wrap(config: &mut ConfigKeyMap, diagnostics: &mut Vec<ConfigurationDiagnostic>) -> Option<bool> {
   match config.shift_remove("wrap") {
-    Some(ConfigKeyValue::Bool(b)) => Some(WrapOption::Bool(b)),
-    Some(ConfigKeyValue::Number(n)) => {
-      if n <= 0 {
-        diagnostics.push(ConfigurationDiagnostic {
-          property_name: "wrap".to_string(),
-          message: "wrap must be an integer greater than 0 or boolean.".to_string(),
-        });
-        None
-      } else {
-        Some(WrapOption::Column(n as u32))
-      }
+    Some(ConfigKeyValue::Bool(b)) => Some(b),
+    Some(ConfigKeyValue::Number(_)) => {
+      diagnostics.push(ConfigurationDiagnostic {
+        property_name: "wrap".to_string(),
+        message: "wrap must be a boolean.".to_string(),
+      });
+      None
     }
     Some(_) => {
       diagnostics.push(ConfigurationDiagnostic {
         property_name: "wrap".to_string(),
-        message: "Expected a boolean or integer for wrap.".to_string(),
+        message: "Expected a boolean for wrap.".to_string(),
       });
       None
     }

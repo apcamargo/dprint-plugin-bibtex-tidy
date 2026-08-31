@@ -3,16 +3,6 @@ use dprint_core::configuration::ParseConfigurationError;
 use dprint_core::generate_str_to_from;
 use serde::{Deserialize, Serialize};
 
-/// Line ending applied to formatted output.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub enum LineEnding {
-  Lf,
-  Crlf,
-}
-
-generate_str_to_from![LineEnding, [Lf, "lf"], [Crlf, "crlf"]];
-
 /// Duplicate detection rules.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -73,14 +63,6 @@ pub enum AlignOption {
   Column(u32),
 }
 
-/// Options for wrapping lines.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum WrapOption {
-  Bool(bool),
-  Column(u32),
-}
-
 /// Options for duplicates check.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -111,9 +93,9 @@ pub enum GenerateKeysOption {
 pub struct Configuration {
   pub line_width: Option<u32>,
   pub indent_width: Option<u8>,
+  /// Effective newline kind (plugin `newLineKind` overrides global).
+  pub new_line_kind: Option<NewLineKind>,
   pub use_tabs: Option<bool>,
-  pub space: Option<u8>,
-  pub tab: Option<bool>,
   pub align: Option<AlignOption>,
   pub blank_lines: Option<bool>,
   pub curly: Option<bool>,
@@ -138,9 +120,6 @@ pub struct Configuration {
   pub lowercase: Option<bool>,
   pub enclosing_braces: Option<FieldListOrBool>,
   pub remove_braces: Option<FieldListOrBool>,
-  pub wrap: Option<WrapOption>,
+  pub wrap: Option<bool>,
   pub omit: Option<Vec<String>>,
-  /// Global dprint newline behavior when `lineEnding` is not configured.
-  pub new_line_kind: Option<NewLineKind>,
-  pub line_ending: Option<LineEnding>,
 }

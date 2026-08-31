@@ -41,7 +41,7 @@ fn formats_documented_bibtex_tidy_options() {
 fn global_line_width_controls_wrapping() {
   let formatted = format_with_resolved_config(
     LONG_VALUE,
-    json!({}),
+    json!({"wrap": true}),
     GlobalConfiguration {
       line_width: Some(40),
       ..GlobalConfiguration::default()
@@ -103,10 +103,10 @@ fn global_auto_uses_lf_without_input_newline() {
 }
 
 #[test]
-fn plugin_lf_line_ending_overrides_global_auto() {
+fn plugin_lf_new_line_kind_overrides_global_auto() {
   let formatted = format_with_resolved_config(
     "@article{key,title={Hello}}\r\n",
-    json!({ "lineEnding": "lf" }),
+    json!({ "newLineKind": "lf" }),
     GlobalConfiguration {
       new_line_kind: Some(NewLineKind::Auto),
       ..GlobalConfiguration::default()
@@ -119,10 +119,10 @@ fn plugin_lf_line_ending_overrides_global_auto() {
 }
 
 #[test]
-fn plugin_crlf_line_ending_overrides_global_auto() {
+fn plugin_crlf_new_line_kind_overrides_global_auto() {
   let formatted = format_with_resolved_config(
     UNFORMATTED_BIBTEX,
-    json!({ "lineEnding": "crlf" }),
+    json!({ "newLineKind": "crlf" }),
     GlobalConfiguration {
       new_line_kind: Some(NewLineKind::Auto),
       ..GlobalConfiguration::default()
@@ -132,6 +132,54 @@ fn plugin_crlf_line_ending_overrides_global_auto() {
   .expect("input needs formatting");
 
   assert_eq!(formatted, FORMATTED_CRLF);
+}
+
+#[test]
+fn plugin_auto_new_line_kind_preserves_crlf_over_global_lf() {
+  let formatted = format_with_resolved_config(
+    "@article{key,title={Hello}}\r\n",
+    json!({ "newLineKind": "auto" }),
+    GlobalConfiguration {
+      new_line_kind: Some(NewLineKind::LineFeed),
+      ..GlobalConfiguration::default()
+    },
+  )
+  .expect("formatting succeeds")
+  .expect("input needs formatting");
+
+  assert_eq!(formatted, FORMATTED_CRLF);
+}
+
+#[test]
+fn plugin_system_new_line_kind_uses_the_host_newline() {
+  let formatted = format_with_resolved_config(
+    UNFORMATTED_BIBTEX,
+    json!({ "newLineKind": "system" }),
+    GlobalConfiguration {
+      new_line_kind: Some(NewLineKind::CarriageReturnLineFeed),
+      ..GlobalConfiguration::default()
+    },
+  )
+  .expect("formatting succeeds")
+  .expect("input needs formatting");
+
+  let expected = if cfg!(windows) { FORMATTED_CRLF } else { FORMATTED_LF };
+  assert_eq!(formatted, expected);
+}
+
+#[test]
+fn resolver_returns_effective_wrap_and_new_line_kind() {
+  let result = resolve_config(
+    config_key_map(json!({ "newLineKind": "auto", "wrap": true })),
+    &GlobalConfiguration {
+      new_line_kind: Some(NewLineKind::CarriageReturnLineFeed),
+      ..GlobalConfiguration::default()
+    },
+  );
+
+  assert!(result.diagnostics.is_empty());
+  assert_eq!(result.config.wrap, Some(true));
+  assert_eq!(result.config.new_line_kind, Some(NewLineKind::Auto));
 }
 
 #[test]
@@ -153,8 +201,6 @@ fn published_schema_and_resolver_validate_documented_configurations() {
     ("lineWidth", vec![json!(80)], vec![json!(0)]),
     ("indentWidth", vec![json!(4)], vec![json!(-1), json!(256)]),
     ("useTabs", vec![json!(true)], vec![json!(1)]),
-    ("space", vec![json!(4)], vec![json!(-1), json!(256)]),
-    ("tab", vec![json!(true)], vec![json!(1)]),
     ("align", vec![json!(16), json!(false)], vec![json!(-1)]),
     ("blankLines", vec![json!(true)], vec![json!(1)]),
     ("curly", vec![json!(true)], vec![json!(1)]),
@@ -217,34 +263,68 @@ fn published_schema_and_resolver_validate_documented_configurations() {
       vec![json!(true), json!(["abstract"])],
       vec![json!(123), json!([1])],
     ),
-    ("wrap", vec![json!(80), json!(false)], vec![json!(0)]),
+    (
+      "wrap",
+      vec![json!(true), json!(false)],
+      vec![json!(0), json!(80), json!("true")],
+    ),
     ("omit", vec![json!(["abstract", "file"])], vec![json!(123), json!([1])]),
     (
-      "lineEnding",
-      vec![json!("lf"), json!("crlf")],
-      vec![json!("auto"), json!(true)],
+      "newLineKind",
+      vec![json!("auto"), json!("lf"), json!("crlf"), json!("system")],
+      vec![json!("invalid"), json!(true)],
     ),
   ];
 
-  let expected_properties: BTreeSet<_> = cases.iter().map(|(name, _, _)| *name).collect();
+  let expected_properties = BTreeSet::from([
+    "align",
+    "blankLines",
+    "curly",
+    "dropAllCaps",
+    "duplicates",
+    "encodeUrls",
+    "enclosingBraces",
+    "escape",
+    "generateKeys",
+    "indentWidth",
+    "lowercase",
+    "maxAuthors",
+    "merge",
+    "months",
+    "newLineKind",
+    "numeric",
+    "omit",
+    "removeBraces",
+    "removeDuplicateFields",
+    "removeEmptyFields",
+    "sort",
+    "sortFields",
+    "stripComments",
+    "stripEnclosingBraces",
+    "trailingCommas",
+    "tidyComments",
+    "unescape",
+    "useTabs",
+    "wrap",
+    "lineWidth",
+  ]);
   let actual_properties: BTreeSet<_> = properties.keys().map(String::as_str).collect();
   assert_eq!(actual_properties, expected_properties);
   assert!(properties["lineWidth"].get("default").is_none());
-  assert!(properties["lineEnding"].get("default").is_none());
+  assert!(properties["newLineKind"].get("default").is_none());
 
   // dprint-core intentionally coerces primitive strings. The published schema
   // remains strict so editor validation distinguishes JSON numbers from text.
   for (name, value) in [
     ("lineWidth", json!("80")),
     ("indentWidth", json!("4")),
-    ("space", json!("4")),
     ("align", json!("16")),
     ("maxAuthors", json!("3")),
-    ("wrap", json!("80")),
+    ("wrap", json!("true")),
   ] {
     assert!(
       !validator.is_valid(&single_property(name, value)),
-      "schema accepted a string where {name} requires a number"
+      "schema accepted an invalid string value for {name}"
     );
   }
 

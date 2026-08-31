@@ -31,7 +31,7 @@ To add configuration, specify a `"bibtex-tidy"` key in your `dprint.json`:
     "align": 14,
     "sort": ["-year", "title"],
     "trailingCommas": true,
-    "lineEnding": "lf"
+    "newLineKind": "auto"
   },
   "plugins": [
     // ...etc...
@@ -41,40 +41,38 @@ To add configuration, specify a `"bibtex-tidy"` key in your `dprint.json`:
 
 ### Properties
 
-| Property                | Type                  | Default                           | Description                                                                                                              |
-| ----------------------- | --------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `lineWidth`             | `integer`             | unset                             | When configured locally or in dprint globals, wraps at this column (numeric `--wrap`).                                   |
-| `indentWidth`           | `integer`             | `2`                               | Number of spaces per indentation level (`--space`).                                                                      |
-| `useTabs`               | `boolean`             | `false`                           | Indent with tabs instead of spaces (`--tab`).                                                                            |
-| `space`                 | `integer`             | `2`                               | Alias for `indentWidth` (CLI parity).                                                                                    |
-| `tab`                   | `boolean`             | `false`                           | Alias for `useTabs` (CLI parity).                                                                                        |
-| `align`                 | `integer \| boolean`  | `14`                              | Align field values at column (or `false` / `1` to disable).                                                              |
-| `blankLines`            | `boolean`             | `false`                           | Insert an empty line between each bibliography entry.                                                                    |
-| `curly`                 | `boolean`             | `false`                           | Enclose all property values in braces (`"..."` -> `{...}`).                                                              |
-| `numeric`               | `boolean`             | `false`                           | Strip braces and quotes from numeric and month values.                                                                   |
-| `months`                | `boolean`             | `false`                           | Convert month names to standard 3-letter macros (`jan`, `feb`, ...).                                                     |
-| `sort`                  | `boolean \| string[]` | `false`                           | Sort entries by citation key or specified fields (`-` for descending).                                                   |
-| `duplicates`            | `boolean \| string[]` | `false`                           | Check/warn for duplicates (`doi`, `key`, `abstract`, `citation`).                                                        |
-| `merge`                 | `boolean \| string`   | `false`                           | Merge duplicate entries (`first`, `last`, `combine`, `overwrite`).                                                       |
-| `stripEnclosingBraces`  | `boolean`             | `false`                           | Strip double braces around entire values (`{{...}}` -> `{...}`).                                                         |
-| `dropAllCaps`           | `boolean`             | `false`                           | Convert all-caps fields to Title Case preserving Roman numerals.                                                         |
-| `escape`                | `boolean \| string`   | `true`                            | Escape special characters to LaTeX macros (`true`, `false`, `"new"`).                                                    |
-| `unescape`              | `boolean`             | `false`                           | Convert LaTeX escapes back to Unicode characters.                                                                        |
-| `sortFields`            | `boolean \| string[]` | `false`                           | Sort fields within entries by standard or custom order.                                                                  |
-| `stripComments`         | `boolean`             | `false`                           | Remove all comments from the BibTeX source.                                                                              |
-| `tidyComments`          | `boolean`             | `true`                            | Normalize whitespace surrounding comments.                                                                               |
-| `trailingCommas`        | `boolean`             | `false`                           | Ensure the last field in each entry ends with a trailing comma.                                                          |
-| `encodeUrls`            | `boolean`             | `false`                           | Percent-encode special characters in URLs.                                                                               |
-| `removeEmptyFields`     | `boolean`             | `false`                           | Remove fields with empty values.                                                                                         |
-| `removeDuplicateFields` | `boolean`             | `true`                            | Keep only one instance of each field per entry.                                                                          |
-| `generateKeys`          | `boolean \| string`   | `false`                           | Replace citation keys using JabRef citation key templates.                                                               |
-| `maxAuthors`            | `integer`             | `null`                            | Truncate author lists exceeding N authors to `and others`.                                                               |
-| `lowercase`             | `boolean`             | `true`                            | Lowercase field names and entry types.                                                                                   |
-| `enclosingBraces`       | `boolean \| string[]` | `false`                           | Enclose specified fields in double braces (`{{...}}`).                                                                   |
-| `removeBraces`          | `boolean \| string[]` | `false`                           | Strip curly braces inside field values.                                                                                  |
-| `wrap`                  | `integer \| boolean`  | unset                             | Matches no `--wrap` flag. A number sets the column; `true` uses 80; `false` disables wrapping.                           |
-| `omit`                  | `string[]`            | `[]`                              | Remove specified fields from bibliography entries.                                                                       |
-| `lineEnding`            | `string`              | dprint global (`"lf"` when unset) | Line ending style (`"lf"` or `"crlf"`); overrides global `newLineKind`, while global `"auto"` preserves the input style. |
+| Property                | Type                  | Default                           | Description |
+| ----------------------- | --------------------- | --------------------------------- | ----------- |
+| `lineWidth`             | `integer`             | `80`                              | Column width to wrap at when `wrap` is `true`. Falls back to the global dprint `lineWidth`, then `80` if neither is set. Ignored when `wrap` is `false`. |
+| `indentWidth`           | `integer`             | `2`                               | Spaces per indent level. Ignored when `useTabs` is `true`. |
+| `newLineKind`           | `string`              | dprint global (`"lf"` when unset) | Line ending to use. `auto` keeps the file's existing ending, `system` matches the OS (CRLF on Windows, LF elsewhere). Falls back to the dprint global setting, then `lf`. |
+| `useTabs`               | `boolean`             | `false`                           | Use tabs for indentation instead of spaces. |
+| `align`                 | `integer \| boolean`  | `14`                              | Column to align field values at. `false` or `1` leaves a single space instead of aligning. |
+| `blankLines`            | `boolean`             | `false`                           | Put an empty line between entries. |
+| `curly`                 | `boolean`             | `false`                           | Wrap values in braces, so `"..."` becomes `{...}`. |
+| `numeric`               | `boolean`             | `false`                           | Drop braces and quotes from numeric and month values. |
+| `months`                | `boolean`             | `false`                           | Turn month names into the standard three-letter macros (`jan`, `feb`, and so on). |
+| `sort`                  | `boolean \| string[]` | `false`                           | Sort entries. `true` sorts by citation key, or list the fields you want. Prefix a field with `-` for descending. |
+| `duplicates`            | `boolean \| string[]` | `false`                           | Flag duplicate entries by `doi`, `key`, `abstract`, or `citation`. `true` checks all four. If unset and `merge` is on, defaults to `doi`, `citation`, `abstract`. |
+| `merge`                 | `boolean \| string`   | `false`                           | Merge duplicate entries: `first`, `last`, `combine`, or `overwrite`. Turns on duplicate checking if it is not already enabled. |
+| `stripEnclosingBraces`  | `boolean`             | `false`                           | Strip an outer pair of double braces, so `{{Journal}}` becomes `{Journal}`. |
+| `dropAllCaps`           | `boolean`             | `false`                           | Turns all-caps values into title case, so `TITLE` becomes `Title`. Leaves Roman numerals such as `IV` unchanged. |
+| `escape`                | `boolean \| string`   | `true`                            | Escape special characters to LaTeX macros. `true` uses the legacy macro list, `"new"` uses only package-independent escapes, `false` disables escaping. |
+| `unescape`              | `boolean`             | `false`                           | Turn LaTeX escapes back into Unicode. |
+| `sortFields`            | `boolean \| string[]` | `false`                           | Order fields inside each entry. `true` uses bibtex-tidy's standard order, or pass your own list. |
+| `stripComments`         | `boolean`             | `false`                           | Delete all comments from the source. |
+| `tidyComments`          | `boolean`             | `true`                            | Clean up whitespace around comments. |
+| `trailingCommas`        | `boolean`             | `false`                           | Keep a trailing comma on the last field of each entry. |
+| `encodeUrls`            | `boolean`             | `false`                           | Percent-encode invalid characters in URL values. |
+| `removeEmptyFields`     | `boolean`             | `false`                           | Drop fields with an empty value. |
+| `removeDuplicateFields` | `boolean`             | `true`                            | Keep only the first copy of a repeated field. |
+| `generateKeys`          | `boolean \| string`   | `false`                           | Replace citation keys using a JabRef pattern, like `[auth][year]`. |
+| `maxAuthors`            | `integer`             | `null`                            | Cut author lists to N names, appending `and others`. |
+| `lowercase`             | `boolean`             | `true`                            | Lowercase entry types and field names. |
+| `enclosingBraces`       | `boolean \| string[]` | `false`                           | Wrap the given fields in `{{...}}` so BibTeX preserves their case. |
+| `removeBraces`          | `boolean \| string[]` | `false`                           | Strip braces inside values, unless they are part of a LaTeX command. |
+| `wrap`                  | `boolean`             | `false`                           | Wrap long values at `lineWidth` (`80` if unset) when `true`. No effect when `false`, the default. |
+| `omit`                  | `string[]`            | `[]`                              | Delete these fields entirely from every entry. |
 
 ## Versioning
 

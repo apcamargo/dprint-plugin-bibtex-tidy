@@ -1,4 +1,4 @@
-~~ lineWidth: 40, wrap: true ~~
+~~ wrap: true ~~
 == should wrap long values at bibtex-tidy's fixed default width ==
 @article{key,
   title         = {This is a very long title that should certainly be wrapped when formatted with a short line width limit}

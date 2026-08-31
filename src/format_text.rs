@@ -26,7 +26,7 @@ pub(crate) fn format_text_with_engine(
 ) -> Result<Option<String>, FormattingError> {
   let options_json = to_bibtex_tidy_options_json(config)?;
   let formatted = engine.format(input_text, &options_json)?;
-  let formatted = apply_line_ending(formatted, input_text, config);
+  let formatted = apply_new_line_kind(formatted, input_text, config);
 
   if formatted == input_text {
     Ok(None)
@@ -38,11 +38,11 @@ pub(crate) fn format_text_with_engine(
 fn to_bibtex_tidy_options_json(config: &Configuration) -> Result<String, serde_json::Error> {
   let mut map = serde_json::Map::new();
 
-  // Tab & Space / Indentation
-  if let Some(tab) = config.tab.or(config.use_tabs) {
+  // Indentation
+  if let Some(tab) = config.use_tabs {
     map.insert("tab".to_string(), serde_json::Value::Bool(tab));
   }
-  if let Some(space) = config.space.or(config.indent_width) {
+  if let Some(space) = config.indent_width {
     map.insert("space".to_string(), serde_json::json!(space));
   }
 
@@ -203,18 +203,13 @@ fn to_bibtex_tidy_options_json(config: &Configuration) -> Result<String, serde_j
     }
   }
 
-  // Wrap / LineWidth
-  if let Some(wrap) = &config.wrap {
-    match wrap {
-      WrapOption::Bool(b) => {
-        map.insert("wrap".to_string(), serde_json::Value::Bool(*b));
-      }
-      WrapOption::Column(c) => {
-        map.insert("wrap".to_string(), serde_json::json!(c));
-      }
-    }
-  } else if let Some(line_width) = config.line_width {
-    map.insert("wrap".to_string(), serde_json::json!(line_width));
+  // Wrap. When true, lineWidth sets the column. Defaults to 80 when wrapping.
+  let wrap_enabled = config.wrap.unwrap_or(false);
+  if wrap_enabled {
+    let effective_width = config.line_width.unwrap_or(80);
+    map.insert("wrap".to_string(), serde_json::json!(effective_width));
+  } else {
+    map.insert("wrap".to_string(), serde_json::Value::Bool(false));
   }
 
   if let Some(omit) = &config.omit {
@@ -224,14 +219,10 @@ fn to_bibtex_tidy_options_json(config: &Configuration) -> Result<String, serde_j
   serde_json::to_string(&map)
 }
 
-fn apply_line_ending(text: String, input_text: &str, config: &Configuration) -> String {
+fn apply_new_line_kind(text: String, input_text: &str, config: &Configuration) -> String {
   use dprint_core::configuration::{NewLineKind, resolve_new_line_kind};
 
-  let new_line_kind = match config.line_ending {
-    Some(LineEnding::Lf) => NewLineKind::LineFeed,
-    Some(LineEnding::Crlf) => NewLineKind::CarriageReturnLineFeed,
-    None => config.new_line_kind.unwrap_or(NewLineKind::LineFeed),
-  };
-  let line_ending = resolve_new_line_kind(input_text, new_line_kind);
-  text.replace("\r\n", "\n").replace('\n', line_ending)
+  let new_line_kind = config.new_line_kind.unwrap_or(NewLineKind::LineFeed);
+  let new_line = resolve_new_line_kind(input_text, new_line_kind);
+  text.replace("\r\n", "\n").replace('\n', new_line)
 }
