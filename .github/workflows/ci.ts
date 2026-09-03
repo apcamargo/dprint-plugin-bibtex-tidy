@@ -97,7 +97,7 @@ const buildJob = job("build", {
       if: isReleaseAndTag,
       run: [
         "# stamp the release version into the schema $id",
-        `sed -i 's|/releases/download/0.0.0/schema.json|/releases/download/'"\${{ steps.get_tag_version.outputs.TAG_VERSION }}"'/schema.json|' deployment/schema.json`,
+        `sed -i 's|/apcamargo/bibtex-tidy/0.0.0/schema.json|/apcamargo/bibtex-tidy/'"\${{ steps.get_tag_version.outputs.TAG_VERSION }}"'/schema.json|' deployment/schema.json`,
         "# rename the wasm file",
         `(cd target/wasm32-unknown-unknown/release/ && mv ${cargoWasmName}.wasm plugin.wasm)`,
         "# create release notes",
